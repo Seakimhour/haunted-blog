@@ -11,7 +11,7 @@ class BlogsController < ApplicationController
   end
 
   def show
-    redirect_to blogs_url if !@blog.owned_by?(current_user) && @blog.secret?
+    raise ActiveRecord::RecordNotFound if !@blog.owned_by?(current_user) && @blog.secret?
   end
 
   def new
@@ -25,6 +25,8 @@ class BlogsController < ApplicationController
 
     if @blog.save
       redirect_to blog_url(@blog), notice: 'Blog was successfully created.'
+    elsif @blog.errors[:random_eyecatch]
+      render :new, status: :found
     else
       render :new, status: :unprocessable_entity
     end
@@ -33,6 +35,8 @@ class BlogsController < ApplicationController
   def update
     if @blog.update(blog_params)
       redirect_to blog_url(@blog), notice: 'Blog was successfully updated.'
+    elsif @blog.errors[:random_eyecatch]
+      render :edit, status: :found
     else
       render :edit, status: :unprocessable_entity
     end
@@ -47,7 +51,7 @@ class BlogsController < ApplicationController
   private
 
   def owner_validate
-    redirect_to blogs_url unless @blog.owned_by?(current_user)
+    raise ActiveRecord::RecordNotFound unless @blog.owned_by?(current_user)
   end
 
   def set_blog
