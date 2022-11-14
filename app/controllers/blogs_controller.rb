@@ -47,7 +47,7 @@ class BlogsController < ApplicationController
   private
 
   def owner_validate
-    redirect_to blogs_url if !@blog.owned_by?(current_user)
+    redirect_to blogs_url unless @blog.owned_by?(current_user)
   end
 
   def set_blog
