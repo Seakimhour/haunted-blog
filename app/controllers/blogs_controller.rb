@@ -25,8 +25,6 @@ class BlogsController < ApplicationController
 
     if @blog.save
       redirect_to blog_url(@blog), notice: 'Blog was successfully created.'
-    elsif @blog.errors[:random_eyecatch]
-      render :new, status: :found
     else
       render :new, status: :unprocessable_entity
     end
@@ -35,8 +33,6 @@ class BlogsController < ApplicationController
   def update
     if @blog.update(blog_params)
       redirect_to blog_url(@blog), notice: 'Blog was successfully updated.'
-    elsif @blog.errors[:random_eyecatch]
-      render :edit, status: :found
     else
       render :edit, status: :unprocessable_entity
     end
@@ -59,6 +55,9 @@ class BlogsController < ApplicationController
   end
 
   def blog_params
-    params.require(:blog).permit(:title, :content, :secret, :random_eyecatch)
+    params_allowed = [:title, :content, :secret]
+    params_allowed += [:random_eyecatch] if current_user.premium?
+
+    params.require(:blog).permit(params_allowed)
   end
 end
