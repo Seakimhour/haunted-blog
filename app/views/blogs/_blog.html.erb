@@ -12,9 +12,9 @@
         <img class="resize" src="https://picsum.photos/536/354">
       </div>
     <% end %>
-    <div class="blog-content">
+    <p class="blog-content">
       <%= format_content(blog) %>
-    </div>
+    </p>
     <% if user_signed_in? && !blog.secret? %>
       <% liking_users_path = api_blog_liking_users_path(blog, format: :json) %>
       <% create_path = api_blog_likings_path(blog, format: :json) %>
